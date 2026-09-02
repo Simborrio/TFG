@@ -1,0 +1,53 @@
+#
+# sample-app-sensors-tlm.txt
+#
+# SAMPLE_APP_SENSORS_TLM_MID (0x0893) payload, sent in reply to
+# SAMPLE_APP_GET_SENSORS_CC. Fields/offsets/sizes verified against the
+# real compiled struct layout with offsetof() (see
+# SAMPLE_APP_SensorsTlm_Payload_t in default_sample_app_msgdefs.h) -
+# note there is compiler-inserted alignment padding before Lat (3 bytes)
+# and before Groundspeed (2 bytes), those gaps are intentionally skipped
+# below.
+#
+# IMPORTANT: offsets here are 4 less than the raw packet offset.
+# GroundSystem.py's "Telemetry Header Version" defaults to a global
+# +4 byte add (GroundSystem.TLM_HDR_V1_OFFSET, applied in
+# GenericTelemetry.display_telemetry_item as item_start = declared
+# offset + tlm_offset) on every telemetry page, same convention already
+# used by the stock sample-app-hk-tlm.txt (its "Command Counter" is
+# declared at 12, which is 12+4=16, the real start of the HK payload).
+# Bug found in testing: this file originally used raw packet offsets
+# with no -4 correction, so every field read 4 bytes further into the
+# packet than intended (e.g. Battery Voltage read BatteryRemaining's
+# byte instead, Battery Remaining read a byte of Latitude instead).
+#
+# This file should have the following comma delimited fields:
+#   1. Data item description
+#   2. Offset of data item in packet
+#   3. Length of data item
+#   4. Python data type of item ( using python struct library )
+#   5. Display type of item ( Currently Dec, Hex, Str, Enm )
+#   6. Display string for enumerated value 0 ( or NULL if none )
+#   7. Display string for enumerated value 1 ( or NULL if none )
+#   8. Display string for enumerated value 2 ( or NULL if none )
+#   9. Display string for enumerated value 3 ( or NULL if none )
+#
+#  Note(1): A line that begins with # is a comment
+#  Note(2): Remove any blank lines from the end of the file
+#
+Heartbeat Seen,          62,  1,  B, Enm, No,          Yes,         NULL,       NULL
+Last Attitude (ms),      12,  4,  I, Dec, NULL,        NULL,        NULL,       NULL
+Roll (rad),              16,  4,  f, Dec, NULL,        NULL,        NULL,       NULL
+Pitch (rad),             20,  4,  f, Dec, NULL,        NULL,        NULL,       NULL
+Yaw (rad),               24,  4,  f, Dec, NULL,        NULL,        NULL,       NULL
+Battery Voltage (mV),    28,  2,  H, Dec, NULL,        NULL,        NULL,       NULL
+Battery Current (cA),    30,  2,  h, Dec, NULL,        NULL,        NULL,       NULL
+Battery Remaining (%),   32,  1,  b, Dec, NULL,        NULL,        NULL,       NULL
+Latitude (degE7),        36,  4,  i, Dec, NULL,        NULL,        NULL,       NULL
+Longitude (degE7),       40,  4,  i, Dec, NULL,        NULL,        NULL,       NULL
+Altitude MSL (mm),       44,  4,  i, Dec, NULL,        NULL,        NULL,       NULL
+GPS Fix Type,            48,  1,  B, Dec, NULL,        NULL,        NULL,       NULL
+Satellites Visible,      49,  1,  B, Dec, NULL,        NULL,        NULL,       NULL
+Groundspeed (m/s),       52,  4,  f, Dec, NULL,        NULL,        NULL,       NULL
+Airspeed (m/s),          56,  4,  f, Dec, NULL,        NULL,        NULL,       NULL
+Heading (deg),           60,  2,  h, Dec, NULL,        NULL,        NULL,       NULL
